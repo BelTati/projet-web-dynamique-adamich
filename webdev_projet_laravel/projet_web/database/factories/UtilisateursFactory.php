@@ -1,7 +1,7 @@
 <?php
 namespace Database\Factories;
 
-use App\Models\Adresses;
+use App\Models\Adresse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -12,7 +12,7 @@ class UtilisateursFactory extends Factory
         return [
             'nom' => fake()->lastName(),
             'prenom' => fake()->firstName(),
-            'adresse_id' => Adresses::factory(), 
+            'adresse_id' => Adresse::factory(), 
             'email' => fake()->unique()->safeEmail(),
             'password' => Hash::make('password'),
             'tva' => fake()->optional(0.3)->numerify('BE ####.###.###'), // Uniquement pour certains

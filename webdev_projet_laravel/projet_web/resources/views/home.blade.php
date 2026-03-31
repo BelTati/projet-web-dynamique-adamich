@@ -1,62 +1,37 @@
 @extends('layouts.default')
+
 @section('content')
-   
-      
-<main class="col-md-10">
-      @include('include.slider')  
-<div>
-    <div class="container mt-5">
-    <div class="row align-items-center">
-        <!-- Colonne pour l'image -->
-        
-        <!-- Colonne pour la zone de recherche -->
-        <div class="container mt-4">
-            <div class="row align-items-center"> <!-- Alignement vertical centré -->
-                <div class="col-md-8"> <!-- Zone de recherche (prend 8 colonnes sur médiums+) -->
-                    
-                    <div class="input-group">   
-                        <input type="search" class="form-control" placeholder="Rechercher...">
-                        <button class="btn btn-primary" type="button">
-                            button
-                        </button>
+<div class="container mt-5">
+    <h2 class="mb-4">Nouveaux prestataires</h2>
+    <div class="row">
+        @foreach($prestataires as $prestataire)
+            <div class="col-md-3 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary">{{ $prestataire->nom }} {{ $prestataire->prenom }}</h5>
+                        
+                        <!-- AFFICHAGE DES CATÉGORIES -->
+                        <div class="mb-2">
+                            @forelse($prestataire->categories as $cat)
+                                <span class="badge bg-info text-dark fw-normal" style="font-size: 0.75rem;">
+                                    {{ $cat->nom }}
+                                </span>
+                            @empty
+                                <span class="text-muted small italic">Aucun service</span>
+                            @endforelse
+                        </div>
+
+                        <p class="card-text text-muted small">
+                            <i class="fas fa-map-marker-alt"></i> {{ $prestataire->adresses->ville ?? 'Ville non précisée' }}
+                        </p>
+                        
+                        <a href="{{ route('provider.show', $prestataire->id) }}" class="btn btn-outline-primary btn-sm w-100">
+                            Voir le profil
+                        </a>
                     </div>
-                
-                </div>
-                
-                <div class="col-md-4"> <!-- Image (prend 4 colonnes sur médiums+) -->
-                    <img src="images/service.jpg" alt="Description de l'image" class="img-fluid float-right">
                 </div>
             </div>
-        
-               
-
-        </div>
-        </div>
- 
-
-
-
-<!--
-
-    <div class="row">
-        <div class="input-group col-md-6">
-            <span class="input-group-text" id="basic-addon1">Titre de tache</span>
-            <input
-                type="text"
-                class="form-control"
-                placeholder="title"
-                aria-label="title"
-                aria-describedby="basic-addon1"
-                name="title"
-            />
-        </div>
-       <div class="input-group col-md-6">   
-            <img id="" class="" src="images/service.jpg" alt="" />
-     </div>
-   </div>  
--->
-
+        @endforeach
+    </div>
 </div>
-</main>
-
 @endsection

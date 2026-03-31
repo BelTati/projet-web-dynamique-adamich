@@ -2,12 +2,17 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Illuminate\Contracts\Auth\MustVerifyEmail; // Import indispensable
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany; // Importez ceci
+
+class User extends Authenticatable   implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -17,31 +22,65 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'nom',
+        'prenom',
         'email',
         'password',
+        'adresse_id',
+        'tva',
+        'telephone_mobile',
+        'site_web',
+        'langue',
+        'role',
+        'nombre_tentatives_connexion',
+        'est_banni',
+        'newsletter',
+        'email_verified_at',
+        'inscription_confirmation_token',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'est_banni' => 'boolean',
+        'newsletter' => 'boolean',
+        'nombre_tentatives_connexion' => 'integer',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    public function hasVerifiedEmail()
+{
+    return ! is_null($this->email_verified_at);
 }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'ADMIN';
+    }
+
+    public function isProvider(): bool
+    {
+        return $this->role === 'PROVIDER';
+    }
+
+    public function categories()
+    {
+        
+        return $this->belongsToMany(
+            Categorie::class, 
+            'categorie_prestataires', // Nom de votre table
+            'prestataire_id',         // FK de cette table
+            'categorie_id'           // FK de la table cible
+        );
+    }
+    public function stages()
+    {
+         return $this->hasMany(Stage::class, 'prestataire_id');
+    }
+
+    public function adresses()
+    {
+        // 'user_id' doit être le nom de la FK dans votre table 'adresses'
+        return $this->belongsTo(Adresse::class, 'adresse_id', 'id');
+    }
+
+}   

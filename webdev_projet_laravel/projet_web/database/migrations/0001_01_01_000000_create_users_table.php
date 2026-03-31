@@ -13,27 +13,29 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('nom');
+            $table->string('prenom');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->rememberToken();
-            $table->timestamps();
-        });
-
-        Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
-            $table->string('token');
-            $table->timestamp('created_at')->nullable();
-        });
-
-        Schema::create('sessions', function (Blueprint $table) {
-            $table->string('id')->primary();
-            $table->foreignId('user_id')->nullable()->index();
-            $table->string('ip_address', 45)->nullable();
-            $table->text('user_agent')->nullable();
-            $table->longText('payload');
-            $table->integer('last_activity')->index();
+            $table->string('telephone_mobile')->nullable();
+            $table->string('tva')->nullable();
+            $table->string('site_web')->nullable();
+            $table->string('langue', 5)->default('fr'); // ex: fr, en
+            
+            // Rôles avec ENUM
+            $table->enum('role', ['ADMIN', 'USER', 'PROVIDER', 'TEMP'])->default('USER');
+            
+            // Sécurité et État
+            $table->integer('nombre_tentatives_connexion')->default(0);
+            $table->boolean('est_banni')->default(false);
+            $table->boolean('newsletter')->default(false);
+            $table->timestamp('email_verified_at')->nullable();
+             $table->string('inscription_confirmation_token', 64)->nullable(); //->after('email');
+            
+            // Clé étrangère pour l'adresse (table adresses à créer au préalable)
+            $table->foreignId('adresse_id')->nullable()->constrained('adresses')->onDelete('set null');
+            
+            $table->timestamps(); // Gère automatiquement 'date inscription' (created_at)
         });
     }
 
