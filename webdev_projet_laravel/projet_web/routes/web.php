@@ -11,12 +11,7 @@ use App\Http\Controllers\RegisterController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 
-/*
-Route::get('/', function () {
-    return view('home');
-  
-});
-*/
+
 
 Route::get('/', [CategorieController::class, 'index'])->name('home');
 
